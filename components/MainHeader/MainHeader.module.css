@@ -1,6 +1,6 @@
 .main {
   margin: auto;
-  width: 1000px;
+  /* width: 1000px; */
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -9,6 +9,10 @@
   padding-left: 3rem;
   padding-right: 3rem;
   font-size: 1.2rem;
+  border-style: solid;
+  border-color: black;
+  border-width: 0 0 2px 0;
+  background-color: aqua;
 }
 
 .logo-click {

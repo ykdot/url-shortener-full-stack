@@ -24,11 +24,6 @@ function MainHeader() {
 
       <nav className={styles['nav-list']}>
         <ul>
-          <li>
-            <Link href="/">Home</Link>
-          </li>
-        </ul>
-        <ul>
           <Button>Logout</Button>
         </ul>
       </nav>
