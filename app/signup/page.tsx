@@ -1,10 +1,11 @@
 import { Metadata } from 'next';
 
 import ModelForm from '@/components/Authentication/ModelForm';
-import { LoginForm } from '@/components/Authentication/LoginForm';
+import { SignUpForm } from '@/components/Authentication/SignUpForm';
+import styles from './Authentication.module.css';
 
 export const metadata: Metadata = {
-  title: 'Sign In',
+  title: 'Sign Up',
 };
 
 enum Version {
@@ -12,16 +13,16 @@ enum Version {
   SIGNUP,
 }
 
-function LoginPage() {
+function SignUpPage() {
   return (
     <div>
       <div className="flex flex-col content-center justify-center px-30 gap-3 min-h-screen bg-no-repeat bg-cover bg-[url(/patterns.png)]">
-        <ModelForm version={Version.LOGIN}>
-          <LoginForm />
+        <ModelForm version={Version.SIGNUP}>
+          <SignUpForm />
         </ModelForm>
       </div>
     </div>
   );
 }
 
-export default LoginPage;
+export default SignUpPage;
