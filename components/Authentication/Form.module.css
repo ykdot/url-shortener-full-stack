@@ -1,0 +1,13 @@
+@media screen and (min-width: 768px) {
+  .container {
+    width: 700px;
+    margin: 0 auto;
+  }
+}
+
+/* Styles for desktops and up */
+@media screen and (min-width: 1024px) {
+  .container {
+    width: 960px;
+  }
+}
