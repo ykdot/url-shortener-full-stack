@@ -1,0 +1,11 @@
+
+- data table setup with pagination, etc = yes
+- main header tweak = yes 
+- form css tweak  = yes
+- table css tweak = yes
+- user page tweak, fitting everything nicely = yes
+- root page work = yes
+- admin page work = yes
+- implement shadcn forms with login and signup forms = yes
+- start on functionality of login 
+- set up express js
