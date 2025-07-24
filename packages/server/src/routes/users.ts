@@ -1,6 +1,12 @@
 import express, { Request, Response, Router } from 'express';
+import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import db from '../db'; // Import the database module
+
+interface JwtPayload {
+  id: number;
+  username: string;
+}
 
 const router: Router = express.Router();
 
@@ -38,8 +44,19 @@ router.post('/login', async (req: Request, res: Response) => {
     if (!isMatch) {
       return res.status(401).json({ error: 'Username or Password is wrong.' });
     }
-    console.log("it works");
-    res.status(201).json({username, password});
+    const payload: JwtPayload = { id: user.id, username: user.username };
+    const secretKey = process.env.JWT_SECRET as string; 
+
+    const token = jwt.sign(
+      payload,
+      secretKey,
+      { expiresIn: '1h' }
+    );
+
+    return res.status(200).json({
+      message: 'Login successful!',
+      token: token
+});
   } catch (err) {
     console.error(err);
     res.status(500).send('Error connecting to the database');
@@ -81,6 +98,8 @@ router.post('/create-user', async (req: Request, res: Response) => {
     res.status(500).send('Error connecting to the database');
   }
 }); 
+
+
 
 
 export default router;
