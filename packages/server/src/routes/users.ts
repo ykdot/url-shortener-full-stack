@@ -1,9 +1,10 @@
 import express, { Request, Response, Router } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import db from '../db'; // Import the database module
+import db from '../db'; 
 
 interface JwtPayload {
+  id: number;
   username: string;
 }
 
@@ -43,7 +44,7 @@ router.post('/login', async (req: Request, res: Response) => {
     if (!isMatch) {
       return res.status(401).json({ error: 'Username or Password is wrong.' });
     }
-    const payload: JwtPayload = { username: user.username };
+    const payload: JwtPayload = { id: user.id, username: user.username };
     const secretKey = process.env.JWT_SECRET as string; 
 
     const token = jwt.sign(
@@ -91,7 +92,7 @@ router.post('/create-user', async (req: Request, res: Response) => {
     const values = [username, email, hashedPassword];
 
     const result = await db.query(insertQuery, values);
-    const payload: JwtPayload = { username: username };
+    const payload: JwtPayload = { id: result.id, username: username };
     const secretKey = process.env.JWT_SECRET as string; 
 
     const token = jwt.sign(
@@ -110,7 +111,38 @@ router.post('/create-user', async (req: Request, res: Response) => {
   }
 }); 
 
+router.delete('/delete-user/:id', async (req: Request, res: Response) => {
+  const deleteQuery = 'DELETE FROM users WHERE id=$1 AND username=$2';
 
+  try {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Format: "Bearer TOKEN"
+
+    if (!token) {
+      return res.status(401).json({ message: 'Authentication token is required' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: number; username: string };
+
+    const idFromParams = parseInt(req.params.id, 10);
+    if (decoded.id !== idFromParams) {
+      return res.status(403).json({ message: 'Forbidden: You can only delete your own account.' });
+    }
+
+    const result = await db.query(deleteQuery, [decoded.id, decoded.username]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    return res.sendStatus(204);
+
+  } catch (err) {
+    if (err instanceof jwt.JsonWebTokenError) {
+      return res.status(403).json({ message: 'Invalid or expired token.' });
+    }
+  }
+}); 
 
 
 export default router;
