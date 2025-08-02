@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from 'express';
 import db from './db'; // Import the database module
 import usersRouter from './routes/users';
+import urlRouter from './routes/urls';
 
 
 const app: Express = express();
@@ -24,6 +25,8 @@ app.get('/test-db', async (req: Request, res: Response): Promise<void> => {
 });
 
 app.use('/users', usersRouter);
+app.use('/urls', urlRouter);
+
 
 app.listen(port, () => {
   console.log(`🚀 Server is running at http://localhost:${port}`);
