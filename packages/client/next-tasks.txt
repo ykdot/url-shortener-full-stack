@@ -7,5 +7,6 @@
 - root page work = yes
 - admin page work = yes
 - implement shadcn forms with login and signup forms = yes
-- start on functionality of login 
-- set up express js
+- start on functionality of login = yes 
+- set up express js = yes
+- logout setup on client side

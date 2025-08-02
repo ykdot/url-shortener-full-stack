@@ -36,3 +36,5 @@ SELECT current_database();
 INSERT INTO users (username, email, password) VALUES ('user1', 'user1@aoz.com', '123456789');
 
 SELECT * FROM users;
+SELECT * FROM urls;
+DELETE FROM users WHERE id='1' AND username='user1';
