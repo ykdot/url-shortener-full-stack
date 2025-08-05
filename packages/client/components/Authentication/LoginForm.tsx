@@ -41,9 +41,18 @@ export function LoginForm() {
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
     // ✅ This will be type-safe and validated.
-
     try {
-      // const data = await login(values);
+      const response = await fetch('http://localhost:3000/users/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+      const data = await response.json();
+      console.log(data);
+      // store the token somewhere in the frontend
+      // redirect to 'main' page if successful login
       // userCtx.login(data[0], data[1], data[2]);
       push('/');
     } catch (error: any) {
