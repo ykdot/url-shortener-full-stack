@@ -1,4 +1,5 @@
 import express, { Express, Request, Response } from 'express';
+const cors = require('cors');
 import db from './db'; // Import the database module
 import usersRouter from './routes/users';
 import urlRouter from './routes/urls';
@@ -8,7 +9,7 @@ const app: Express = express();
 const port = 3000;
 
 app.use(express.json());
-
+app.use(cors());
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello, TypeScript Express! 👋');
