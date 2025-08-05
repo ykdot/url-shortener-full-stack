@@ -14,6 +14,66 @@ router.get('/', (req: Request, res: Response) => {
   res.send('This is the users route');
 });
 
+router.get('/get-user-info', async (req: Request, res: Response) => {
+  const getUserInfoQuery = 'SELECT * FROM users WHERE id=$1';
+
+  try {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Format: "Bearer TOKEN"
+
+    if (!token) {
+      return res.status(401).json({ message: 'Authentication token is required' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: number; username: string };
+
+    const result = await db.query(getUserInfoQuery, [decoded.id]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    return res.status(200).json({
+      message: 'Login successful!',
+      username: result.rows[0].username
+    });
+  } catch (err) {
+    if (err instanceof jwt.JsonWebTokenError) {
+      return res.status(403).json({ message: 'Invalid or expired token.' });
+    }
+  }
+});
+
+router.get('/get-user-urls', async (req: Request, res: Response) => {
+  const getUserUrlsQuery = 'SELECT * FROM urls WHERE user_id=$1';
+
+  try {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Format: "Bearer TOKEN"
+
+    if (!token) {
+      return res.status(401).json({ message: 'Authentication token is required' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: number; username: string };
+
+    const result = await db.query(getUserUrlsQuery, [decoded.id]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    return res.status(200).json({
+      message: 'Login successful!',
+      urls: result.rows
+    });
+  } catch (err) {
+    if (err instanceof jwt.JsonWebTokenError) {
+      return res.status(403).json({ message: 'Invalid or expired token.' });
+    }
+  }
+});
+
 router.post('/login', async (req: Request, res: Response) => {
   const { username, password } = req.body;
 
@@ -53,9 +113,15 @@ router.post('/login', async (req: Request, res: Response) => {
       { expiresIn: '1h' }
     );
 
+    res.cookie('authToken', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
     return res.status(200).json({
       message: 'Login successful!',
-      token: token
     });
   } catch (err) {
     console.error(err);
@@ -101,9 +167,15 @@ router.post('/create-user', async (req: Request, res: Response) => {
       { expiresIn: '1h' }
     );
 
+    res.cookie('authToken', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
     return res.status(200).json({
       message: 'Login successful!',
-      token: token
     });
   } catch (err) {
     console.error(err);
