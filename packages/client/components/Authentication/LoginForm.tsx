@@ -42,19 +42,20 @@ export function LoginForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     // ✅ This will be type-safe and validated.
     try {
-      const response = await fetch('http://localhost:3000/users/login', {
+      const response = await fetch('http://localhost:3001/api/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(values),
       });
+
       const data = await response.json();
       console.log(data);
       // store the token somewhere in the frontend
       // redirect to 'main' page if successful login
       // userCtx.login(data[0], data[1], data[2]);
-      push('/');
+      push(`/user/${data.username}`);
     } catch (error: any) {
       if (error.response == 403) {
         form.setError('username', {

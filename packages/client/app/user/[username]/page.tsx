@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import URLForm from '@/components/URLForm/URLForm';
 import styles from './page.module.css';
 import MainHeader from '@/components/MainHeader/MainHeader';
@@ -10,30 +12,58 @@ export const metadata: Metadata = {
   title: 'Homepage',
 };
 
-async function getData(): Promise<URL_Data[]> {
-  // Fetch data from your API here.
-  return [
+type PageProps = {
+  params: {
+    username: string;
+  };
+};
+
+async function checkUser(username: string) {
+  const cookie = await cookies();
+  const response = await fetch(
+    'http://localhost:3001/api/users/get-user-info',
     {
-      id: '728ed52f',
-      new_link: 'https://ui.shadcn.com/docs/components',
-      original_link: 'https://ui.shadcn.com/docs/components',
-      date: '7/12/25',
-    },
-    {
-      id: '489e1d42',
-      new_link: 'https://ui.shadcn.com/docs/components/data-table',
-      original_link: 'https://ui.shadcn.com/docs/components/data-table',
-      date: '7/13/25',
-    },
-  ];
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Cookie: cookie.toString(),
+      },
+      credentials: 'include',
+    }
+  );
+  const data = await response.json();
+  if (!response.ok || data.username != username) {
+    redirect('/login');
+  }
 }
 
-export default async function UserPage() {
+// this is a server side function, so need to use next/headers to access cookies from the client side
+async function getData(): Promise<URL_Data[]> {
+  const cookie = await cookies();
+  const response = await fetch(
+    'http://localhost:3001/api/users/get-user-urls',
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Cookie: cookie.toString(),
+      },
+      credentials: 'include',
+    }
+  );
+  const data = await response.json();
+  return data.urls;
+}
+
+export default async function UserPage({ params }: PageProps) {
+  const slug = await params;
+  await checkUser(slug.username);
   const data = await getData();
   return (
     <>
       <MainHeader />
       <div className={styles['container']}>
+        <p>Welcome {slug.username}!</p>
         <URLForm />
         <URLTable columns={columns} data={data} />
       </div>
