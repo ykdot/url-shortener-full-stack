@@ -1,61 +1,81 @@
 'use client';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ColumnDef } from '@tanstack/react-table';
 import { Button } from '../ui/button';
+import { deleteURL } from '@/actions/url-actions';
 
 export type URL_Data = {
   id: string;
-  new_link: string;
-  original_link: string;
+  short_code: string;
+  long_url: string;
   date: string;
 };
 
+// Example data
 export const payments: URL_Data[] = [
   {
     id: '728ed52f',
-    new_link: 'https://ui.shadcn.com/docs/components',
-    original_link: 'https://ui.shadcn.com/docs/components',
+    short_code: 'https://ui.shadcn.com/docs/components',
+    long_url: 'https://ui.shadcn.com/docs/components',
     date: '7/12/25',
   },
   {
     id: '489e1d42',
-    new_link: 'https://ui.shadcn.com/docs/components/data-table',
-    original_link: 'https://ui.shadcn.com/docs/components/data-table',
+    short_code: 'https://ui.shadcn.com/docs/components/data-table',
+    long_url: 'https://ui.shadcn.com/docs/components/data-table',
     date: '7/13/25',
   },
 ];
+
+function CellComponent({ short_code }: { short_code: string }) {
+  const router = useRouter();
+  async function deleteUserUrl(shortcode: string) {
+    const response = await deleteURL(shortcode);
+    if (response.status) {
+      router.refresh();
+    } else {
+      alert('error with deleting url');
+    }
+  }
+
+  return <Button onClick={() => deleteUserUrl(short_code)}>Delete URL</Button>;
+}
 
 export const columns: ColumnDef<URL_Data>[] = [
   {
     accessorKey: 'date',
     header: 'Date',
+    cell: ({ row }) => {
+      const jsDate = new Date(row.original.date);
+      const formattedDate = jsDate.toLocaleDateString('en-US');
+      return <p>{formattedDate}</p>;
+    },
   },
   {
-    accessorKey: 'new_link',
+    accessorKey: 'short_code',
     header: 'New Link',
     cell: ({ row }) => {
       return (
-        <Link href={row.original.new_link} target="_blank">
-          {row.original.new_link}
+        <Link href={row.original.short_code} target="_blank">
+          {row.original.short_code}
         </Link>
       );
     },
   },
   {
-    accessorKey: 'original_link',
+    accessorKey: 'long_url',
     header: 'Original Link',
     cell: ({ row }) => {
       return (
-        <Link href={row.original.original_link} target="_blank">
-          {row.original.original_link}
+        <Link href={row.original.long_url} target="_blank">
+          {row.original.long_url}
         </Link>
       );
     },
   },
   {
     id: 'actions',
-    cell: ({ row }) => {
-      return <Button>Delete URL</Button>;
-    },
+    cell: ({ row }) => <CellComponent short_code={row.original.short_code} />,
   },
 ];
