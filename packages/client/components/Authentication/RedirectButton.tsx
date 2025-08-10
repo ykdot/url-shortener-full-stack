@@ -18,7 +18,7 @@ export default function RedirectButton({
     if (version === Version.LOGIN) {
       push('/signup');
     } else {
-      push('/login');
+      push('/');
     }
   }
 
