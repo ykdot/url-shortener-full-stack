@@ -3,15 +3,28 @@ import jwt from 'jsonwebtoken';
 import db from '../db'; 
 import { encodeBase64 } from 'bcryptjs';
 import encodeToBase62 from '../utils/encoding';
+import { redisClient } from '../redis-config';
 
 const router: Router = express.Router();
 
 router.get('/:id', async (req: Request, res: Response) => {
+  const longUrl = await redisClient.get(req.params.id);
+  if (longUrl) {
+    console.log("REDIS RUNNING");
+    return res.status(200).json({
+      message: "success",
+      long_url: longUrl,
+    });    
+  }
+
   const urlQuery = 'SELECT long_url FROM urls WHERE short_code= $1';
   const url = await db.query(urlQuery, [req.params.id]);
-  console.log(url);
 
   if (url.rowCount > 0) {
+    await redisClient.set(req.params.id, url.rows[0]['long_url'], {
+      EX: 300 // 5 minutes
+    });
+
     return res.status(200).json({
       message: "success",
       long_url: url.rows[0]['long_url'],
