@@ -8,33 +8,28 @@ import { redisClient } from '../redis-config';
 const router: Router = express.Router();
 
 router.get('/:id', async (req: Request, res: Response) => {
-  const longUrl = await redisClient.get(req.params.id);
-  if (longUrl) {
-    console.log("REDIS RUNNING");
-    return res.status(200).json({
-      message: "success",
-      long_url: longUrl,
-    });    
+  let longUrl = await redisClient.get(req.params.id);
+  if (!longUrl) {
+    const urlQuery = 'SELECT long_url FROM urls WHERE short_code= $1';
+    const url = await db.query(urlQuery, [req.params.id]);
+
+    if (url.rowCount > 0) {
+      longUrl = url.rows[0]['long_url'];
+      await redisClient.set(req.params.id, url.rows[0]['long_url'], {
+        EX: 300 // 5 minutes
+      });
+    }
+    else {
+      return res.status(404).json({
+        message: "not found!"
+      }); 
+    }   
   }
 
-  const urlQuery = 'SELECT long_url FROM urls WHERE short_code= $1';
-  const url = await db.query(urlQuery, [req.params.id]);
-
-  if (url.rowCount > 0) {
-    await redisClient.set(req.params.id, url.rows[0]['long_url'], {
-      EX: 300 // 5 minutes
-    });
-
-    return res.status(200).json({
-      message: "success",
-      long_url: url.rows[0]['long_url'],
-    });    
-  }
-  else {
-    return res.status(404).json({
-      message: "not found!"
-    }); 
-  }
+  return res.status(200).json({
+    message: "success",
+    long_url: longUrl,
+  }); 
 });
 
 router.post('/create-new-url', async (req: Request, res: Response) => {
