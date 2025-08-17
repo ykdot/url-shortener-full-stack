@@ -4,6 +4,7 @@ import db from '../db';
 import { encodeBase64 } from 'bcryptjs';
 import encodeToBase62 from '../utils/encoding';
 import { redisClient } from '../redis-config';
+import { publishMessage } from '../rabbitmq-producer';
 
 const router: Router = express.Router();
 
@@ -25,6 +26,14 @@ router.get('/:id', async (req: Request, res: Response) => {
       }); 
     }   
   }
+
+  const eventData = {
+    shortCode: req.params.id,
+    timestamp: Date.now().toString(),
+    ip: req.ip,
+    userAgent: req.headers['user-agent'],
+  };
+  publishMessage('click', eventData);
 
   return res.status(200).json({
     message: "success",

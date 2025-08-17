@@ -1,9 +1,10 @@
 import express, { Express, Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
 const cors = require('cors');
-import db from './db'; // Import the database module
+import db from './db'; 
 import usersRouter from './routes/users';
 import urlRouter from './routes/urls';
+import { connectToRabbitMQ, } from './rabbitmq-producer';
 
 
 const app: Express = express();
@@ -31,6 +32,11 @@ app.use('/users', usersRouter);
 app.use('/urls', urlRouter);
 
 
-app.listen(port, () => {
-  console.log(`🚀 Server is running at http://localhost:${port}`);
-});
+async function startServer() {
+  await connectToRabbitMQ();
+  app.listen(port, () => {
+    console.log(`🚀 Server is listening on port ${port}`);
+  });
+}
+
+startServer();

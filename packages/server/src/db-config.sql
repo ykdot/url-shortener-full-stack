@@ -1,4 +1,5 @@
 CREATE DATABASE url_shortener_database;
+CREATE DATABASE real_time_chat_service;
 
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
@@ -6,26 +7,32 @@ CREATE TABLE users (
   email VARCHAR(25) NOT NULL,
   password VARCHAR(100) NOT NULL
 );
+DROP TABLE users;
+
 
 CREATE TABLE urls (
-  short_code VARCHAR(6) PRIMARY KEY,
-  date DATE,
+  id BIGSERIAL PRIMARY KEY,
+  short_code VARCHAR(15) UNIQUE,
+  date DATE NOT NULL,
   user_id SERIAL NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   long_url VARCHAR(100) NOT NULL
 );
 DROP TABLE urls;
 
 CREATE TABLE clicks (
-  short_code VARCHAR(6) PRIMARY KEY,
-  timestamp TIMESTAMPTZ NOT NULL,
-  id_address VARCHAR(100) NOT NULL,
-  country VARCHAR(100) NOT NULL
+  id BIGSERIAL PRIMARY KEY,
+  short_code VARCHAR(15) NOT NULL REFERENCES urls(short_code),
+  timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  ip_address VARCHAR(45),
+  user_agent VARCHAR(100)
 );
+DROP TABLE clicks;
 
 CREATE TABLE url_analytics (
-  short_code VARCHAR(6) PRIMARY KEY,
+  short_code VARCHAR(15) UNIQUE,
   clicks BIGINT NOT NULL
 );
+DROP TABLE url_analytics;
 
 
 SELECT table_name
@@ -37,11 +44,28 @@ SELECT current_database();
 
 INSERT INTO users (username, email, password) VALUES ('user1', 'user1@aoz.com', '123456789');
 
+SELECT * FROM User;
+
 SELECT * FROM users;
 SELECT * FROM urls;
+SELECT * FROM clicks;
+SELECT * FROM url_analytics;
 DELETE FROM users WHERE id='1' AND username='user1';
 DELETE FROM users WHERE id='2';
+DELETE FROM urls WHERE short_code='';
+
 
 INSERT INTO urls (short_code, date, user_id, long_url) VALUES ('111aaa', 'today', 11, 'https://www.youtube.com/');
 INSERT INTO urls (short_code, date, user_id, long_url) VALUES ('111aab', 'today', 11, 'https://www.google.com/');
 INSERT INTO urls (short_code, date, user_id, long_url) VALUES ('111aac', 'today', 11, 'https://www.reddit.com/');
+INSERT INTO urls (short_code, date, user_id, long_url) VALUES ('111aaD', 'today', 11, 'https://www.reddit.com/');
+INSERT INTO urls (date, user_id, long_url) VALUES ('today', 11, 'https://www.reddit.com/');
+
+SELECT * FROM urls WHERE user_id=11;
+
+
+SHOW datestyle;
+
+
+INSERT INTO clicks (short_code, timestamp, ip_address, user_agent)
+VALUES ('8', '2025-08-17 20:30:00Z', '127.0.0.1', 'final-test');
