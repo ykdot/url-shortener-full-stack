@@ -5,6 +5,7 @@ import db from './db';
 import usersRouter from './routes/users';
 import urlRouter from './routes/urls';
 import adminRouter from './routes/admin';
+import urlAnalyticsRouter from './routes/url-analytics';
 import { connectToRabbitMQ, } from './rabbitmq-producer';
 
 
@@ -32,6 +33,7 @@ app.get('/test-db', async (req: Request, res: Response): Promise<void> => {
 app.use('/admin', adminRouter);
 app.use('/users', usersRouter);
 app.use('/urls', urlRouter);
+app.use('/analytics', urlAnalyticsRouter);
 
 
 async function startServer() {
