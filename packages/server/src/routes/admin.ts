@@ -82,7 +82,7 @@ router.post('/login', async (req: Request, res: Response) => {
     }
 
     if (password.trim().length < 3) {
-      return res.status(400).json({ 
+      return res.status(401).json({ 
         error: 'Username or Password is wrong.' 
       });
     }

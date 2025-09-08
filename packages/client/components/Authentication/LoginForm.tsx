@@ -1,5 +1,6 @@
 'use client';
 
+import { FC, ReactNode } from 'react';
 import { useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
@@ -21,12 +22,22 @@ import { Input } from '@/components/ui/input';
 // import { UserContext } from '@/store/user-context';
 import styles from './Form.module.css';
 
+enum Version {
+  ADMIN_LOGIN,
+  LOGIN,
+  SIGNUP,
+}
+
+interface LoginFormProps {
+  version: Version;
+}
+
 const formSchema = z.object({
   username: z.string().min(2).max(50),
   password: z.string().min(2).max(50),
 });
 
-export function LoginForm() {
+const LoginForm: FC<LoginFormProps> = ({ version }) => {
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -39,7 +50,7 @@ export function LoginForm() {
 
   // const userCtx = useContext(UserContext);
   // 2. Define a submit handler.
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onUserSubmit(values: z.infer<typeof formSchema>) {
     // ✅ This will be type-safe and validated.
     try {
       const response = await fetch('http://localhost:3001/api/users/login', {
@@ -52,12 +63,18 @@ export function LoginForm() {
 
       const data = await response.json();
       console.log(data);
+
+      if (!response.ok) {
+        // Throw an error with the message from the server to be caught below.
+        throw new Error(data.message || 'An error occurred');
+      }
       // store the token somewhere in the frontend
       // redirect to 'main' page if successful login
       // userCtx.login(data[0], data[1], data[2]);
       push(`/user/${data.username}`);
     } catch (error: any) {
-      if (error.response == 403) {
+      console.log(error);
+      if (error.response == 401) {
         form.setError('username', {
           type: 'manual',
           message: 'Wrong username or password',
@@ -77,6 +94,58 @@ export function LoginForm() {
         });
       }
     }
+  }
+
+  async function onAdminSubmit(values: z.infer<typeof formSchema>) {
+    // ✅ This will be type-safe and validated.
+    try {
+      const response = await fetch('http://localhost:3001/api/admin/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+
+      const data = await response.json();
+      console.log(data);
+
+      if (!response.ok) {
+        // Throw an error with the message from the server to be caught below.
+        throw new Error(data.message || 'An error occurred');
+      }
+      // store the token somewhere in the frontend
+      // redirect to 'main' page if successful login
+      // userCtx.login(data[0], data[1], data[2]);
+      push(`/dashboard`);
+    } catch (error: any) {
+      if (error.response == 401) {
+        form.setError('username', {
+          type: 'manual',
+          message: 'Wrong username or password',
+        });
+        form.setError('password', {
+          type: 'manual',
+          message: 'Wrong username or password',
+        });
+      } else {
+        form.setError('username', {
+          type: 'manual',
+          message: 'Wrong username or password',
+        });
+        form.setError('password', {
+          type: 'manual',
+          message: 'Wrong username or password',
+        });
+      }
+    }
+  }
+
+  let onSubmit;
+  if (version == Version.ADMIN_LOGIN) {
+    onSubmit = onAdminSubmit;
+  } else {
+    onSubmit = onUserSubmit;
   }
 
   return (
@@ -112,4 +181,6 @@ export function LoginForm() {
       </form>
     </Form>
   );
-}
+};
+
+export default LoginForm;
