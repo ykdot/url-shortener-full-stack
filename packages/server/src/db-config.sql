@@ -55,10 +55,10 @@ DELETE FROM users WHERE id='2';
 DELETE FROM urls WHERE short_code='';
 
 
-INSERT INTO urls (short_code, date, user_id, long_url) VALUES ('111aaa', 'today', 11, 'https://www.youtube.com/');
-INSERT INTO urls (short_code, date, user_id, long_url) VALUES ('111aab', 'today', 11, 'https://www.google.com/');
-INSERT INTO urls (short_code, date, user_id, long_url) VALUES ('111aac', 'today', 11, 'https://www.reddit.com/');
-INSERT INTO urls (short_code, date, user_id, long_url) VALUES ('111aaD', 'today', 11, 'https://www.reddit.com/');
+INSERT INTO urls (short_code, date, user_id, long_url) VALUES ('111aaa', 'today', 1, 'https://www.youtube.com/');
+INSERT INTO urls (short_code, date, user_id, long_url) VALUES ('111aab', 'today', 1, 'https://www.google.com/');
+INSERT INTO urls (short_code, date, user_id, long_url) VALUES ('111aac', 'today', 1, 'https://www.reddit.com/');
+INSERT INTO urls (short_code, date, user_id, long_url) VALUES ('111aaD', 'today', 1, 'https://www.reddit.com/');
 INSERT INTO urls (date, user_id, long_url) VALUES ('today', 11, 'https://www.reddit.com/');
 
 SELECT * FROM urls WHERE user_id=11;
@@ -69,3 +69,10 @@ SHOW datestyle;
 
 INSERT INTO clicks (short_code, timestamp, ip_address, user_agent)
 VALUES ('8', '2025-08-17 20:30:00Z', '127.0.0.1', 'final-test');
+
+
+
+
+
+SELECT date, long_url, urls.short_code, clicks FROM urls LEFT JOIN url_analytics ON urls.short_code = url_analytics.short_code WHERE long_url ILIKE '%you%' ORDER BY short_code ASC LIMIT 2 OFFSET 0;
+SELECT * FROM url_analytics;
