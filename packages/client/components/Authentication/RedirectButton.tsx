@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 enum Version {
+  ADMIN_LOGIN,
   LOGIN,
   SIGNUP,
 }

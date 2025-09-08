@@ -11,6 +11,7 @@ import { FC, ReactNode } from 'react';
 import styles from './Form.module.css';
 
 enum Version {
+  ADMIN_LOGIN,
   LOGIN,
   SIGNUP,
 }
@@ -23,8 +24,9 @@ interface ModelFormProps {
 const ModelForm: FC<ModelFormProps> = ({ version, children }) => {
   let shownTitle = '';
   let shownOtherOption = '';
-
-  if (version === Version.LOGIN) {
+  if (version === Version.ADMIN_LOGIN) {
+    shownTitle = 'Admin Log In';
+  } else if (version === Version.LOGIN) {
     shownTitle = 'Log In';
     shownOtherOption = 'Create An Account';
   } else {

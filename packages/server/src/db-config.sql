@@ -9,6 +9,14 @@ CREATE TABLE users (
 );
 DROP TABLE users;
 
+CREATE TABLE admin (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(25) NOT NULL UNIQUE,
+  email VARCHAR(25) NOT NULL UNIQUE,
+  password VARCHAR(100) NOT NULL
+);
+DROP TABLE admin;
+SELECT * FROM admin;
 
 CREATE TABLE urls (
   id BIGSERIAL PRIMARY KEY,
@@ -47,6 +55,7 @@ INSERT INTO users (username, email, password) VALUES ('user1', 'user1@aoz.com', 
 SELECT * FROM User;
 
 SELECT * FROM users;
+SELECT * FROM admin;
 SELECT * FROM urls;
 SELECT * FROM clicks;
 SELECT * FROM url_analytics;
@@ -69,3 +78,55 @@ SHOW datestyle;
 
 INSERT INTO clicks (short_code, timestamp, ip_address, user_agent)
 VALUES ('8', '2025-08-17 20:30:00Z', '127.0.0.1', 'final-test');
+
+SELECT COUNT(*) FROM clicks WHERE timestamp >= current_date - interval '7 days';
+SELECT COUNT(DISTINCT short_code) FROM clicks WHERE timestamp >= current_date - interval '7 days';
+SELECT short_code, COUNT(*) AS row_count FROM clicks WHERE timestamp >= current_date - interval '7 days' GROUP BY short_code ORDER BY row_count DESC LIMIT 1;
+SELECT COUNT(*) FROM clicks WHERE timestamp >= current_date - interval '28 days';
+SELECT COUNT(DISTINCT short_code) FROM clicks WHERE timestamp >= current_date - interval '28 days';
+
+
+WITH daily_counts AS (
+    SELECT
+        short_code,
+        COUNT(*) AS total_clicks,
+        COUNT(DISTINCT short_code) OVER () AS distinct_short_codes
+    FROM
+        clicks
+    WHERE
+        timestamp >= current_date - interval '7 days'
+    GROUP BY
+        short_code
+    ORDER BY
+        total_clicks DESC
+    LIMIT 1
+)
+SELECT
+    (SELECT SUM(total_clicks) FROM daily_counts) AS total_clicks_last_7_days,
+    (SELECT distinct_short_codes FROM daily_counts LIMIT 1) AS distinct_short_codes_last_7_days,
+    short_code AS most_frequent_short_code_last_7_days
+FROM daily_counts;
+
+
+
+WITH filtered_data AS (
+    SELECT
+        short_code,
+        COUNT(*) AS row_count
+    FROM
+        clicks
+    WHERE
+        timestamp >= current_date - interval '28 days'
+    GROUP BY
+        short_code
+)
+SELECT
+    (SELECT SUM(row_count) FROM filtered_data) AS total_clicks,
+    (SELECT COUNT(short_code) FROM filtered_data) AS distinct_short_codes,
+    (SELECT short_code FROM filtered_data ORDER BY row_count DESC LIMIT 1) AS most_frequent_short_code;
+
+
+WITH filtered_data AS (SELECT short_code, COUNT(*) AS row_count FROM clicks WHERE timestamp >= current_date - interval '7 days' GROUP BY short_code) SELECT (SELECT SUM(row_count) FROM filtered_data) AS total_clicks, (SELECT COUNT(short_code) FROM filtered_data) AS distinct_short_codes, (SELECT short_code FROM filtered_data ORDER BY row_count DESC LIMIT 1) AS most_frequent_short_code; 
+
+
+
