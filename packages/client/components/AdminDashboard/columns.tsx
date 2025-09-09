@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ColumnDef } from '@tanstack/react-table';
 import { Button } from '../ui/button';
+import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
 import { deleteURL } from '@/actions/url-actions';
 
 export type Management_Data = {
@@ -48,7 +49,17 @@ function CellComponent({ short_code }: { short_code: string }) {
 export const columns: ColumnDef<Management_Data>[] = [
   {
     accessorKey: 'date',
-    header: 'Date',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Date
+          <ArrowUpDown />
+        </Button>
+      )
+    },
     cell: ({ row }) => {
       const jsDate = new Date(row.original.date);
       const formattedDate = jsDate.toLocaleDateString('en-US');
@@ -57,7 +68,17 @@ export const columns: ColumnDef<Management_Data>[] = [
   },
   {
     accessorKey: 'short_code',
-    header: 'Shortcode Link',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Short Code
+          <ArrowUpDown />
+        </Button>
+      )
+    },
     cell: ({ row }) => {
       return (
         <Link href={row.original.short_code} target="_blank">
@@ -68,7 +89,17 @@ export const columns: ColumnDef<Management_Data>[] = [
   },
   {
     accessorKey: 'long_url',
-    header: 'Original Link',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Original Link
+          <ArrowUpDown />
+        </Button>
+      )
+    },    
     cell: ({ row }) => {
       return (
         <Link href={row.original.long_url} target="_blank">
@@ -79,7 +110,17 @@ export const columns: ColumnDef<Management_Data>[] = [
   },
   {
     accessorKey: 'total_clicks',
-    header: 'Total Clicks',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Total Clicks
+          <ArrowUpDown />
+        </Button>
+      )
+    },    
     cell: ({ row }) => {
       return (
         <p>{row.original.total_clicks}</p>
