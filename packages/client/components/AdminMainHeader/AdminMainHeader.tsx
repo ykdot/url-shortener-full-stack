@@ -3,14 +3,14 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import styles from '../MainHeader/MainHeader.module.css';
 import { Button } from '../ui/button';
-// import { logoutAdmin } from '@/actions/authentication-actions';
+import { logoutAdmin } from '@/actions/authentication-actions';
 
 function AdminMainHeader() {
   const { push } = useRouter();
-  function logout() {
-    // logoutAdmin();
+  async function logout() {
+    await logoutAdmin();
     // userCtx.logout();
-    push('/login');
+    push('/dashboard/login');
   }
 
   // future work when checking the context to see if user is signed in
