@@ -34,7 +34,7 @@ export function LinkManagementComponent<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {
-        pageSize: 10,
+        pageSize: 2,
       },
     },
   });

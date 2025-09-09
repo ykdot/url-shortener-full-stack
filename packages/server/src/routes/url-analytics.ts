@@ -64,8 +64,11 @@ router.get('/url-table/:filter/:order/:page/:wordFilter', async (req: Request, r
   const pageLimit = 2;
   const offset = (parseInt(page)-1) * pageLimit;
   try {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Format: "Bearer TOKEN"    
+    // const authHeader = req.headers['authorization'];
+    // console.log(authHeader);
+    // const token = authHeader && authHeader.split(' ')[1]; // Format: "Bearer TOKEN"    
+    console.log(req.cookies["adminToken"]);
+    const token = req.cookies["adminToken"];   
     if (!token) {
       return res.status(401).json({ message: 'Authentication token is required' });
     }

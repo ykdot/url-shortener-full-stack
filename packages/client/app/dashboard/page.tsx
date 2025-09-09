@@ -4,7 +4,7 @@ import MainAnalyticsComponent from "@/components/AdminDashboard/MainAnalyticsCom
 import { columns, payments } from "@/components/AdminDashboard/columns";
 import styles from '../user/[username]/page.module.css';
 import AdminMainHeader from '@/components/AdminMainHeader/AdminMainHeader';
-import { getMainAnalyticsData } from '@/actions/analytics-actions';
+import { getMainAnalyticsData, getURLTable } from '@/actions/analytics-actions';
 
 export const metadata: Metadata = {
   title: 'Admin Dashboard',
@@ -12,8 +12,6 @@ export const metadata: Metadata = {
 
 export default async function AdminPage() {
   let mainData = await getMainAnalyticsData(7);
-  console.log(mainData);
-
   if (mainData.data.total_clicks == null) {
     mainData = {
       total_clicks: "0",
@@ -22,12 +20,15 @@ export default async function AdminPage() {
     }
   }
 
+  const tableData = await getURLTable("date", "desc", "1", "none");
+  console.log(tableData.data);
+  
   return (
     <>
     <AdminMainHeader />
       <div className={styles['container']}>
         <MainAnalyticsComponent initialData={mainData}/>
-        <LinkManagementComponent columns={columns} data={payments}/>
+        <LinkManagementComponent columns={columns} data={tableData.data}/>
       </div>    
     </>
 
