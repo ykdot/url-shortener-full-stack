@@ -3,12 +3,12 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import styles from '../MainHeader/MainHeader.module.css';
 import { Button } from '../ui/button';
-import { logoutAdmin } from '@/actions/authentication-actions';
+// import { logoutAdmin } from '@/actions/authentication-actions';
 
 function AdminMainHeader() {
   const { push } = useRouter();
   function logout() {
-    logoutAdmin();
+    // logoutAdmin();
     // userCtx.logout();
     push('/login');
   }

@@ -19,8 +19,12 @@ router.get('/test', (req: Request, res: Response) => {
 router.get('/main/:days', async (req: Request, res: Response) => {
   let days = req.params.days;
   try {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Format: "Bearer TOKEN"    
+    // const authHeader = req.headers['authorization'];
+    // console.log(authHeader);
+    // const token = authHeader && authHeader.split(' ')[1]; // Format: "Bearer TOKEN"    
+    console.log(req.cookies["adminToken"]);
+    const token = req.cookies["adminToken"];
+
     if (!token) {
       return res.status(401).json({ message: 'Authentication token is required' });
     }
@@ -29,7 +33,7 @@ router.get('/main/:days', async (req: Request, res: Response) => {
     if (decoded.role != 'admin') {
       return res.status(403).json({ message: 'Forbidden Access' });
     }
-    const getMainAnalyticsQuery = `WITH filtered_data AS (SELECT short_code, COUNT(*) AS row_count FROM clicks WHERE timestamp >= current_date - interval '${days} days' GROUP BY short_code) SELECT (SELECT SUM(row_count) FROM filtered_data) AS total_clicks, (SELECT COUNT(short_code) FROM filtered_data) AS distinct_short_codes, (SELECT short_code FROM filtered_data ORDER BY row_count DESC LIMIT 1) AS most_frequent_short_code; `;
+    const getMainAnalyticsQuery = `WITH filtered_data AS (SELECT short_code, COUNT(*) AS row_count FROM clicks WHERE timestamp >= current_date - interval '${days} days' GROUP BY short_code) SELECT (SELECT SUM(row_count) FROM filtered_data) AS total_clicks, (SELECT COUNT(short_code) FROM filtered_data) AS distinct_links, (SELECT short_code FROM filtered_data ORDER BY row_count DESC LIMIT 1) AS most_frequent_short_code; `;
 
     const result = await db.query(getMainAnalyticsQuery);
 
