@@ -5,12 +5,14 @@ import { columns, payments } from "@/components/AdminDashboard/columns";
 import styles from '../user/[username]/page.module.css';
 import AdminMainHeader from '@/components/AdminMainHeader/AdminMainHeader';
 import { getMainAnalyticsData, getURLTable } from '@/actions/analytics-actions';
+import { checkAdminAuthorization } from '@/actions/authorization-actions';
 
 export const metadata: Metadata = {
   title: 'Admin Dashboard',
 };
 
 export default async function AdminPage() {
+  await checkAdminAuthorization();
   let mainData = await getMainAnalyticsData(7);
   if (mainData.data.total_clicks == null) {
     mainData = {

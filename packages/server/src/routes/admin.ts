@@ -12,64 +12,29 @@ interface JwtPayload {
 
 const router: Router = express.Router();
 
-router.get('/', (req: Request, res: Response) => {
-  res.send('This is the users route');
+router.get('/check-authorization', (req: Request, res: Response) => {
+  try {  
+    console.log(req.cookies["adminToken"]);
+    const token = req.cookies["adminToken"];
+
+    if (!token) {
+      return res.status(401).json({ message: 'Authentication token is required' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: number; username: string; role: string };
+    if (decoded.role != 'admin') {
+      return res.status(403).json({ message: 'Forbidden Access' });
+    }
+
+    return res.status(200).json({
+      message: 'Admin Authorization successful!',
+    });
+  } catch (err) {
+    if (err instanceof jwt.JsonWebTokenError) {
+      return res.status(403).json({ message: 'Invalid or expired token.' });
+    }
+  }
 });
-
-// router.get('/get-user-info', async (req: Request, res: Response) => {
-//   const getUserInfoQuery = 'SELECT * FROM users WHERE id=$1';
-
-//   try {
-//     const token = req.cookies.authToken;    
-//     if (!token) {
-//       return res.status(401).json({ message: 'Authentication token is required' });
-//     }
-
-//     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: number; username: string };
-
-//     const result = await db.query(getUserInfoQuery, [decoded.id]);
-
-//     if (result.rowCount === 0) {
-//       return res.status(404).json({ message: 'User not found.' });
-//     }
-
-//     return res.status(200).json({
-//       message: 'Login successful!',
-//       username: result.rows[0].username
-//     });
-//   } catch (err) {
-//     if (err instanceof jwt.JsonWebTokenError) {
-//       return res.status(403).json({ message: 'Invalid or expired token.' });
-//     }
-//   }
-// });
-
-// router.get('/get-user-urls', async (req: Request, res: Response) => {
-//   const getUserUrlsQuery = 'SELECT * FROM urls WHERE user_id=$1';
-//   try {
-//     const token = req.cookies.authToken;    
-
-//     if (!token) {
-//       return res.status(401).json({ message: 'Authentication token is required' });
-//     }
-
-//     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: number; username: string };
-
-//     const result = await db.query(getUserUrlsQuery, [decoded.id]);
-
-//     // if (result.rowCount === 0) {
-//     //   return res.status(404).json({ message: 'User not found.' });
-//     // }
-
-//     return res.status(200).json({
-//       urls: result.rows
-//     });
-//   } catch (err) {
-//     if (err instanceof jwt.JsonWebTokenError) {
-//       return res.status(403).json({ message: 'Invalid or expired session.' });
-//     }
-//   }
-// });
 
 router.post('/login', async (req: Request, res: Response) => {
   const { username, password } = req.body;
