@@ -18,11 +18,7 @@ router.get('/test', (req: Request, res: Response) => {
 
 router.get('/main/:days', async (req: Request, res: Response) => {
   let days = req.params.days;
-  try {
-    // const authHeader = req.headers['authorization'];
-    // console.log(authHeader);
-    // const token = authHeader && authHeader.split(' ')[1]; // Format: "Bearer TOKEN"    
-    console.log(req.cookies["adminToken"]);
+  try {   
     const token = req.cookies["adminToken"];
 
     if (!token) {
@@ -64,10 +60,6 @@ router.get('/url-table/:filter/:order/:page/:wordFilter', async (req: Request, r
   const pageLimit = 2;
   const offset = (parseInt(page)-1) * pageLimit;
   try {
-    // const authHeader = req.headers['authorization'];
-    // console.log(authHeader);
-    // const token = authHeader && authHeader.split(' ')[1]; // Format: "Bearer TOKEN"    
-    console.log(req.cookies["adminToken"]);
     const token = req.cookies["adminToken"];   
     if (!token) {
       return res.status(401).json({ message: 'Authentication token is required' });
@@ -78,7 +70,7 @@ router.get('/url-table/:filter/:order/:page/:wordFilter', async (req: Request, r
       return res.status(403).json({ message: 'Forbidden Access' });
     }
 
-    const getMainTableQuery = `SELECT date, long_url, urls.short_code, clicks FROM urls LEFT JOIN url_analytics ON urls.short_code = url_analytics.short_code WHERE long_url ILIKE '%${wordFilter}%' ORDER BY ${filter} ${order} LIMIT ${pageLimit} OFFSET ${offset};`;
+    const getMainTableQuery = `SELECT date, long_url, urls.short_code, clicks FROM urls LEFT JOIN url_analytics ON urls.short_code = url_analytics.short_code WHERE long_url ILIKE '%${wordFilter}%' ORDER BY ${filter} ${order} LIMIT ${pageLimit+1} OFFSET ${offset};`;
 
     const result = await db.query(getMainTableQuery);
 
@@ -87,8 +79,10 @@ router.get('/url-table/:filter/:order/:page/:wordFilter', async (req: Request, r
     }
 
     return res.status(200).json({
-      message: 'Login successful!',
-      data: result.rows
+      message: 'Data fetched successful!',
+      data: result.rows,
+      page: page,
+      pageLimit: pageLimit
     });
   } catch (err) {
     if (err instanceof jwt.JsonWebTokenError) {

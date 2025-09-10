@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import {
   ColumnDef,
   flexRender,
@@ -17,27 +18,54 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { getURLTable } from '@/actions/analytics-actions';
 
 interface URLTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  page: number,
+  pageLimit: number
 }
 
 export function LinkManagementComponent<TData, TValue>({
   columns,
   data,
+  page, 
+  pageLimit
 }: URLTableProps<TData, TValue>) {
+  const [urlData, setUrlData] = useState<TData[]>(data);
+  const [pageNum, setPageNum] = useState(page);
+  const [nextPageValue, setNextPageValue] = useState(data.length > pageLimit);
+
+  const handleChangePage = async(mode: string) => {
+    let newPageNum = pageNum;
+    if (mode == "prev") {
+      newPageNum--;
+
+    }
+    else if (mode == "next") {
+      newPageNum++;
+    }
+    const tableData = await getURLTable("date", "desc", newPageNum.toString(), "none");
+
+    setPageNum(tableData.page);
+    setNextPageValue(tableData.data.length > pageLimit);
+    setUrlData(tableData.data);
+  };
   const table = useReactTable({
-    data,
+    data: urlData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {
-        pageSize: 2,
+        pageSize: pageLimit,
       },
     },
   });
+
+
+
 
   return (
     <div className='flex flex-col gap-5'>
@@ -99,16 +127,16 @@ export function LinkManagementComponent<TData, TValue>({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
+          onClick={() => handleChangePage("prev")}
+          disabled={pageNum == 1}
         >
           Previous
         </Button>
         <Button
           variant="outline"
           size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
+          onClick={() => handleChangePage("next")}
+          disabled={!nextPageValue}
         >
           Next
         </Button>

@@ -59,8 +59,6 @@ export default function MainAnalyticsComponent({ initialData }: { initialData: A
       most_frequent_short_code: most_frequent_short_code
     });
   };
-  console.log("actual data");
-  console.log(dataInfo);
   return (
     <Card>
       <CardHeader>

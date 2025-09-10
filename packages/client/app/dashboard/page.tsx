@@ -23,14 +23,13 @@ export default async function AdminPage() {
   }
 
   const tableData = await getURLTable("date", "desc", "1", "none");
-  console.log(tableData.data);
   
   return (
     <>
     <AdminMainHeader />
       <div className={styles['container']}>
         <MainAnalyticsComponent initialData={mainData}/>
-        <LinkManagementComponent columns={columns} data={tableData.data}/>
+        <LinkManagementComponent columns={columns} data={tableData.data} page={tableData.page} pageLimit={tableData.pageLimit}/>
       </div>    
     </>
 
