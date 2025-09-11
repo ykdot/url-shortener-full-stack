@@ -9,7 +9,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
-import { Input } from "@/components/ui/input";
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -23,34 +23,43 @@ import { getURLTable } from '@/actions/analytics-actions';
 interface URLTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  page: number,
-  pageLimit: number
+  page: number;
+  pageLimit: number;
 }
 
 export function LinkManagementComponent<TData, TValue>({
   columns,
   data,
-  page, 
-  pageLimit
+  page,
+  pageLimit,
 }: URLTableProps<TData, TValue>) {
-  const [urlData, setUrlData] = useState<TData[]>(data);
+  const [urlData, setUrlData] = useState<TData[]>(
+    data != undefined ? data : []
+  );
   const [pageNum, setPageNum] = useState(page);
-  const [nextPageValue, setNextPageValue] = useState(data.length > pageLimit);
+  const [nextPageValue, setNextPageValue] = useState(
+    data != undefined ? data.length > pageLimit : false
+  );
 
-  const handleChangePage = async(mode: string) => {
+  const handleChangePage = async (mode: string) => {
     let newPageNum = pageNum;
-    if (mode == "prev") {
+    if (mode == 'prev') {
       newPageNum--;
-
-    }
-    else if (mode == "next") {
+    } else if (mode == 'next') {
       newPageNum++;
     }
-    const tableData = await getURLTable("date", "desc", newPageNum.toString(), "none");
+    const tableData = await getURLTable(
+      'date',
+      'desc',
+      newPageNum.toString(),
+      'none'
+    );
 
     setPageNum(tableData.page);
-    setNextPageValue(tableData.data.length > pageLimit);
-    setUrlData(tableData.data);
+    setNextPageValue(
+      tableData.data != undefined ? tableData.data.length > pageLimit : false
+    );
+    setUrlData(tableData.data != undefined ? tableData.data : []);
   };
   const table = useReactTable({
     data: urlData,
@@ -64,15 +73,9 @@ export function LinkManagementComponent<TData, TValue>({
     },
   });
 
-
-
-
   return (
-    <div className='flex flex-col gap-5'>
-      <Input
-        placeholder="Filter Short URL..."
-        className="max-w-sm"
-      />
+    <div className="flex flex-col gap-5">
+      <Input placeholder="Filter Short URL..." className="max-w-sm" />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -127,15 +130,15 @@ export function LinkManagementComponent<TData, TValue>({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => handleChangePage("prev")}
-          disabled={pageNum == 1}
+          onClick={() => handleChangePage('prev')}
+          disabled={pageNum == 1 || pageNum == undefined}
         >
           Previous
         </Button>
         <Button
           variant="outline"
           size="sm"
-          onClick={() => handleChangePage("next")}
+          onClick={() => handleChangePage('next')}
           disabled={!nextPageValue}
         >
           Next

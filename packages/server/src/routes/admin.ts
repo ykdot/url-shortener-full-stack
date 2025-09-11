@@ -163,8 +163,7 @@ router.post('/logout', (req, res) => {
 router.delete('/delete-user-url/:shortcode', async (req: Request, res: Response) => {
   const deleteQuery = 'DELETE FROM urls WHERE short_code=$1';
   try {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Format: "Bearer TOKEN"    
+    const token = req.cookies["adminToken"];
     if (!token) {
       return res.status(401).json({ message: 'Authentication token is required' });
     }
@@ -173,10 +172,13 @@ router.delete('/delete-user-url/:shortcode', async (req: Request, res: Response)
     if (decoded.role != 'admin') {
       return res.status(403).json({ message: 'Forbidden Access' });
     }
+    console.log(req.params.shortcode);
     
     const result = await db.query(deleteQuery, [req.params.shortcode]);
 
+
     if (result.rowCount === 0) {
+      console.log("here");
       return res.status(404).json({ message: 'URL not found.' });
     }
 

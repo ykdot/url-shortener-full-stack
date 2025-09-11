@@ -21,6 +21,26 @@ export async function deleteURL(shortcode : string) {
   }
 }
 
+export async function deleteURLByAdmin(shortcode : string) {
+  const cookie = await cookies();
+  const response = await fetch(
+    `http://localhost:3001/api/admin/delete-user-url/${shortcode}`,
+    {
+      method: 'DELETE',
+      headers: {
+        Cookie: cookie.toString(),
+      },
+      credentials: 'include',
+    }
+  );
+  if (response.ok) {
+    return { status: true, message: 'Successful Delete' };
+  }
+  else {
+    return { status: false, message: 'Unsuccessful Delete' };
+  }
+}
+
 export async function addURL(url : string) {
   const cookie = await cookies();
   const response = await fetch(

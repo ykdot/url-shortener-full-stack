@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ColumnDef } from '@tanstack/react-table';
 import { Button } from '../ui/button';
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
-import { deleteURL } from '@/actions/url-actions';
+import { ArrowUpDown, ChevronDown, MoreHorizontal } from 'lucide-react';
+import { deleteURLByAdmin } from '@/actions/url-actions';
 
 export type Management_Data = {
   id: string;
@@ -33,11 +33,13 @@ export const payments: Management_Data[] = [
 ];
 
 function CellComponent({ short_code }: { short_code: string }) {
-  const router = useRouter();
+  // const router = useRouter();
   async function deleteUserUrl(shortcode: string) {
-    const response = await deleteURL(shortcode);
+    const response = await deleteURLByAdmin(shortcode);
     if (response.status) {
-      router.refresh();
+      // router.refresh();
+      // temp fix
+      window.location.reload();
     } else {
       alert('error with deleting url');
     }
@@ -53,12 +55,12 @@ export const columns: ColumnDef<Management_Data>[] = [
       return (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Date
           <ArrowUpDown />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
       const jsDate = new Date(row.original.date);
@@ -72,12 +74,12 @@ export const columns: ColumnDef<Management_Data>[] = [
       return (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Short Code
           <ArrowUpDown />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
       return (
@@ -93,13 +95,13 @@ export const columns: ColumnDef<Management_Data>[] = [
       return (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Original Link
           <ArrowUpDown />
         </Button>
-      )
-    },    
+      );
+    },
     cell: ({ row }) => {
       return (
         <Link href={row.original.long_url} target="_blank">
@@ -114,17 +116,15 @@ export const columns: ColumnDef<Management_Data>[] = [
       return (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Total Clicks
           <ArrowUpDown />
         </Button>
-      )
-    },    
-    cell: ({ row }) => {
-      return (
-        <p>{row.original.total_clicks}</p>
       );
+    },
+    cell: ({ row }) => {
+      return <p>{row.original.total_clicks}</p>;
     },
   },
   {
