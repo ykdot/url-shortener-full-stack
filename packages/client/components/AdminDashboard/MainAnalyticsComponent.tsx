@@ -19,46 +19,53 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { getMainAnalyticsData } from '@/actions/analytics-actions';
 
-type AnalyticsData = { total_clicks:string; distinct_links:string; most_frequent_short_code:string };
+type AnalyticsData = {
+  total_clicks: string;
+  distinct_links: string;
+  most_frequent_short_code: string;
+};
 
-
-export default function MainAnalyticsComponent({ initialData }: { initialData: AnalyticsData }) {
+export default function MainAnalyticsComponent({
+  initialData,
+}: {
+  initialData: AnalyticsData;
+}) {
   const [position, setPosition] = useState('top');
   const [dataInfo, setDataInfo] = useState<AnalyticsData>(initialData);
-  const handleFilterChange = async() => {
+  console.log(dataInfo);
+  const handleFilterChange = async () => {
     let days;
-    if (position == "top") {
+    if (position == 'top') {
       days = 28;
-    }
-    else {
+    } else {
       days = 7;
     }
 
     const data = await getMainAnalyticsData(days);
-    if (position == "top") {
-      setPosition("bottom");
-    }
-    else {
-      setPosition("top");
+    if (position == 'top') {
+      setPosition('bottom');
+    } else {
+      setPosition('top');
     }
     let total_clicks = data.data.total_clicks;
     let distinct_links = data.data.distinct_links;
     let most_frequent_short_code = data.data.most_frequent_short_code;
 
     if (total_clicks == null) {
-      total_clicks = "0";
+      total_clicks = '0';
     }
 
     if (most_frequent_short_code == null) {
-      most_frequent_short_code = `No links in the past ${days}`
+      most_frequent_short_code = `No links in the past ${days}`;
     }
 
     setDataInfo({
       total_clicks: total_clicks,
       distinct_links: distinct_links,
-      most_frequent_short_code: most_frequent_short_code
+      most_frequent_short_code: most_frequent_short_code,
     });
   };
+
   return (
     <Card>
       <CardHeader>
