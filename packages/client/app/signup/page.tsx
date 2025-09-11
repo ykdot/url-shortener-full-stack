@@ -2,13 +2,13 @@ import { Metadata } from 'next';
 
 import ModelForm from '@/components/Authentication/ModelForm';
 import { SignUpForm } from '@/components/Authentication/SignUpForm';
-import styles from './Authentication.module.css';
 
 export const metadata: Metadata = {
   title: 'Sign Up',
 };
 
 enum Version {
+  ADMIN_LOGIN,
   LOGIN,
   SIGNUP,
 }

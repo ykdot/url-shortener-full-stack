@@ -48,7 +48,7 @@ export default function MainAnalyticsComponent({
       setPosition('top');
     }
     let total_clicks = data.data.total_clicks;
-    let distinct_links = data.data.distinct_links;
+    const distinct_links = data.data.distinct_links;
     let most_frequent_short_code = data.data.most_frequent_short_code;
 
     if (total_clicks == null) {

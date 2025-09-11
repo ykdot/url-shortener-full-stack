@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import URLForm from '@/components/URLForm/URLForm';
@@ -13,9 +12,9 @@ export const metadata: Metadata = {
 };
 
 type PageProps = {
-  params: {
+  params: Promise<{
     username: string;
-  };
+  }>;
 };
 
 async function checkUser(username: string) {

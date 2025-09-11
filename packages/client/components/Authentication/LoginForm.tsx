@@ -1,7 +1,6 @@
 'use client';
 
-import { FC, ReactNode } from 'react';
-import { useContext } from 'react';
+import { FC } from 'react';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
@@ -11,7 +10,6 @@ import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -20,7 +18,6 @@ import {
 import { Input } from '@/components/ui/input';
 // import { login } from '@/actions/auth-action';
 // import { UserContext } from '@/store/user-context';
-import styles from './Form.module.css';
 
 enum Version {
   ADMIN_LOGIN,
@@ -72,9 +69,9 @@ const LoginForm: FC<LoginFormProps> = ({ version }) => {
       // redirect to 'main' page if successful login
       // userCtx.login(data[0], data[1], data[2]);
       push(`/user/${data.username}`);
-    } catch (error: any) {
-      console.log(error);
-      if (error.response == 401) {
+    } catch (error: unknown) {
+      // error.response == 401
+      if (error instanceof Error) {
         form.setError('username', {
           type: 'manual',
           message: 'Wrong username or password',
@@ -118,8 +115,9 @@ const LoginForm: FC<LoginFormProps> = ({ version }) => {
       // redirect to 'main' page if successful login
       // userCtx.login(data[0], data[1], data[2]);
       push(`/dashboard`);
-    } catch (error: any) {
-      if (error.response == 401) {
+    } catch (error: unknown) {
+      // error.response == 401
+      if (error instanceof Error) {
         form.setError('username', {
           type: 'manual',
           message: 'Wrong username or password',

@@ -1,7 +1,6 @@
 'use client';
 
-import { useContext } from 'react';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -33,7 +31,7 @@ const formSchema = z
   });
 
 export function SignUpForm() {
-  const { push } = useRouter();
+  // const { push } = useRouter();
   // const userCtx = useContext(UserContext);
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -50,31 +48,30 @@ export function SignUpForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-
-    let data;
-    try {
-      console.log('on submit');
-      data = await signup(values);
-      console.log(data);
-      if (data.code !== undefined && typeof data === 'object') {
-        throw Error('');
-      }
-      userCtx.login(data[0], data[1], data[2]);
-      push('/');
-    } catch (error) {
-      console.log(data);
-      if (data.code == 403) {
-        form.setError(data.name, {
-          type: 'manual',
-          message: data.message,
-        });
-      } else {
-        form.setError('root', {
-          type: 'manual',
-          message: 'Server Error',
-        });
-      }
-    }
+    console.log(values);
+    // let data;
+    // try {
+    //   console.log('on submit');
+    //   // data = await signup(values);
+    //   console.log(data);
+    //   if (data.code !== undefined && typeof data === 'object') {
+    //     throw Error('');
+    //   }
+    //   push('/');
+    // } catch (error) {
+    //   console.log(data);
+    //   if (data.code == 403) {
+    //     form.setError(data.name, {
+    //       type: 'manual',
+    //       message: data.message,
+    //     });
+    //   } else {
+    //     form.setError('root', {
+    //       type: 'manual',
+    //       message: 'Server Error',
+    //     });
+    //   }
+    // }
   }
 
   return (

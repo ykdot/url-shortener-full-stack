@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { LinkManagementComponent } from '@/components/AdminDashboard/LinkManagementComponent';
 import MainAnalyticsComponent from '@/components/AdminDashboard/MainAnalyticsComponent';
-import { columns, payments } from '@/components/AdminDashboard/columns';
+import { columns } from '@/components/AdminDashboard/columns';
 import styles from '../user/[username]/page.module.css';
 import AdminMainHeader from '@/components/AdminMainHeader/AdminMainHeader';
 import { getMainAnalyticsData, getURLTable } from '@/actions/analytics-actions';
