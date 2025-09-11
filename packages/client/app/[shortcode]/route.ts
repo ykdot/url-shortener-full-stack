@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 
 export async function GET(  request: Request, { params }: { params: { shortcode: string } }) {
-  const { shortcode } = await params;
+  const { shortcode } = params;
   const userAgent = request.headers.get('user-agent');
   console.log(userAgent);
   const res = await fetch(`http://localhost:3000/urls/${shortcode}`, {

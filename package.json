@@ -9,7 +9,7 @@
     "dev:client": "npm run dev --workspace=url-shortener-full-stack",
     "dev:server": "npm run dev --workspace=url-shortener-server",
     "dev": "concurrently \"npm:dev:client\" \"npm:dev:server\"",
-    "build": "npm run build --workspace=client"
+    "build": "npm run build --workspace=url-shortener-full-stack"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
