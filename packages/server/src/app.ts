@@ -1,16 +1,18 @@
 import express, { Express, Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
 const cors = require('cors');
-import db from './db'; 
+import db from './db';
 import usersRouter from './routes/users';
 import urlRouter from './routes/urls';
 import adminRouter from './routes/admin';
 import urlAnalyticsRouter from './routes/url-analytics';
-import { connectToRabbitMQ, } from './rabbitmq-producer';
+import { connectToRabbitMQ } from './rabbitmq-producer';
+import dotenv from 'dotenv';
 
+dotenv.config();
 
 const app: Express = express();
-const port = 3000;
+const port = process.env.SERVER_PORT;
 
 app.use(express.json());
 app.use(cors());
@@ -34,7 +36,6 @@ app.use('/admin', adminRouter);
 app.use('/users', usersRouter);
 app.use('/urls', urlRouter);
 app.use('/analytics', urlAnalyticsRouter);
-
 
 async function startServer() {
   await connectToRabbitMQ();
