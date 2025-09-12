@@ -49,14 +49,18 @@ const LoginForm: FC<LoginFormProps> = ({ version }) => {
   // 2. Define a submit handler.
   async function onUserSubmit(values: z.infer<typeof formSchema>) {
     // ✅ This will be type-safe and validated.
+    console.log(process.env.NEXT_PUBLIC_SERVER_API_URL);
     try {
-      const response = await fetch('http://localhost:3001/api/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_API_URL}/api/users/login`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(values),
         },
-        body: JSON.stringify(values),
-      });
+      );
 
       const data = await response.json();
       console.log(data);
@@ -96,13 +100,16 @@ const LoginForm: FC<LoginFormProps> = ({ version }) => {
   async function onAdminSubmit(values: z.infer<typeof formSchema>) {
     // ✅ This will be type-safe and validated.
     try {
-      const response = await fetch('http://localhost:3001/api/admin/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_API_URL}/api/admin/login`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(values),
         },
-        body: JSON.stringify(values),
-      });
+      );
 
       const data = await response.json();
       console.log(data);

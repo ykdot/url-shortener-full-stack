@@ -20,7 +20,7 @@ type PageProps = {
 async function checkUser(username: string) {
   const cookie = await cookies();
   const response = await fetch(
-    'http://localhost:3001/api/users/get-user-info',
+    `${process.env.NEXT_PUBLIC_SERVER_API_URL}/api/users/get-user-info`,
     {
       method: 'GET',
       headers: {
@@ -28,7 +28,7 @@ async function checkUser(username: string) {
         Cookie: cookie.toString(),
       },
       credentials: 'include',
-    }
+    },
   );
   const data = await response.json();
   if (!response.ok || data.username != username) {
@@ -40,7 +40,7 @@ async function checkUser(username: string) {
 async function getData(): Promise<URL_Data[]> {
   const cookie = await cookies();
   const response = await fetch(
-    'http://localhost:3001/api/users/get-user-urls',
+    `${process.env.NEXT_PUBLIC_SERVER_API_URL}/api/users/get-user-urls`,
     {
       method: 'GET',
       headers: {
@@ -48,7 +48,7 @@ async function getData(): Promise<URL_Data[]> {
         Cookie: cookie.toString(),
       },
       credentials: 'include',
-    }
+    },
   );
   const data = await response.json();
   return data.urls;

@@ -15,13 +15,12 @@ export default async function AdminPage() {
   await checkAdminAuthorization();
   let mainData = await getMainAnalyticsData(7);
   if (mainData.data.total_clicks == null) {
-    mainData = {
+    mainData.data = {
       total_clicks: '0',
       distinct_links: '0',
       most_frequent_short_code: `No links in the past 7 days`,
     };
   }
-
   const tableData = await getURLTable('date', 'desc', '1', 'none');
 
   return (
