@@ -1,10 +1,8 @@
 'use client';
-
-// import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -15,8 +13,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-// import { signup } from '@/actions/auth-action';
-// import { UserContext } from '@/store/user-context';
 
 const formSchema = z
   .object({
@@ -31,9 +27,6 @@ const formSchema = z
   });
 
 export function SignUpForm() {
-  // const { push } = useRouter();
-  // const userCtx = useContext(UserContext);
-  // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,35 +36,67 @@ export function SignUpForm() {
       confirmPassword: '',
     },
   });
+  const { push } = useRouter();
 
-  // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values);
-    // let data;
-    // try {
-    //   console.log('on submit');
-    //   // data = await signup(values);
-    //   console.log(data);
-    //   if (data.code !== undefined && typeof data === 'object') {
-    //     throw Error('');
-    //   }
-    //   push('/');
-    // } catch (error) {
-    //   console.log(data);
-    //   if (data.code == 403) {
-    //     form.setError(data.name, {
-    //       type: 'manual',
-    //       message: data.message,
-    //     });
-    //   } else {
-    //     form.setError('root', {
-    //       type: 'manual',
-    //       message: 'Server Error',
-    //     });
-    //   }
-    // }
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_API_URL}/api/users/create-user`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(values),
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Throw an error with the message from the server to be caught below.
+        throw new Error(data.message || 'An error occurred');
+      }
+      push(`/user/${data.username}`);
+    } catch (error: unknown) {
+      // error.response == 401
+      if (error instanceof Error) {
+        form.setError('email', {
+          type: 'manual',
+          message: 'Something went wrong',
+        });
+        form.setError('username', {
+          type: 'manual',
+          message: 'Something went wrong',
+        });
+        form.setError('password', {
+          type: 'manual',
+          message: 'Something went wrong',
+        });
+        form.setError('confirmPassword', {
+          type: 'manual',
+          message: 'Something went wrong',
+        });
+      } else {
+        form.setError('email', {
+          type: 'manual',
+          message: 'Something went wrong',
+        });
+        form.setError('username', {
+          type: 'manual',
+          message: 'Something went wrong',
+        });
+        form.setError('password', {
+          type: 'manual',
+          message: 'Something went wrong',
+        });
+        form.setError('confirmPassword', {
+          type: 'manual',
+          message: 'Something went wrong',
+        });
+      }
+    }
   }
 
   return (
@@ -121,7 +146,7 @@ export function SignUpForm() {
           name="confirmPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Confirm Password</FormLabel>
               <FormControl>
                 <Input placeholder="Confirm Password" {...field} />
               </FormControl>

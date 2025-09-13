@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default async function AdminPage() {
   await checkAdminAuthorization();
-  let mainData = await getMainAnalyticsData(7);
+  const mainData = await getMainAnalyticsData(7);
   if (mainData.data.total_clicks == null) {
     mainData.data = {
       total_clicks: '0',
