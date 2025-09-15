@@ -79,11 +79,7 @@ SHOW datestyle;
 INSERT INTO clicks (short_code, timestamp, ip_address, user_agent)
 VALUES ('8', '2025-08-17 20:30:00Z', '127.0.0.1', 'final-test');
 
-
-
-
-
-SELECT date, long_url, urls.short_code, clicks FROM urls LEFT JOIN url_analytics ON urls.short_code = url_analytics.short_code WHERE long_url ILIKE '%you%' ORDER BY short_code ASC LIMIT 2 OFFSET 0;
+SELECT date, long_url, urls.short_code, url_analytics.clicks FROM urls LEFT JOIN url_analytics ON urls.short_code = url_analytics.short_code WHERE long_url ILIKE '%%' ORDER BY short_code ASC LIMIT 2 OFFSET 0;
 SELECT * FROM url_analytics;
 SELECT COUNT(*) FROM clicks WHERE timestamp >= current_date - interval '7 days';
 SELECT COUNT(DISTINCT short_code) FROM clicks WHERE timestamp >= current_date - interval '7 days';
