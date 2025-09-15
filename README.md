@@ -55,8 +55,8 @@ This project is configured to run entirely within Docker.
 
 1.  **Clone the Repository**
     ```bash
-    git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
-    cd your-repo-name
+    git clone git@github.com:ykdot/url-shortener-full-stack.git
+    cd url-shortener-full-stack
     ```
 
 2.  **Configure Environment Variables**
