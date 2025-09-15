@@ -129,4 +129,4 @@ SELECT
 
 
 WITH filtered_data AS (SELECT short_code, COUNT(*) AS row_count FROM clicks WHERE timestamp >= current_date - interval '7 days' GROUP BY short_code) SELECT (SELECT SUM(row_count) FROM filtered_data) AS total_clicks, (SELECT COUNT(short_code) FROM filtered_data) AS distinct_short_codes, (SELECT short_code FROM filtered_data ORDER BY row_count DESC LIMIT 1) AS most_frequent_short_code; 
-
+DELETE FROM urls WHERE short_code='6';
