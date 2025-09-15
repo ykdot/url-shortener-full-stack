@@ -51,16 +51,13 @@ const LoginForm: FC<LoginFormProps> = ({ version }) => {
     // ✅ This will be type-safe and validated.
     console.log(process.env.NEXT_PUBLIC_SERVER_API_URL);
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_API_URL}/api/users/login`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(values),
+      const response = await fetch(`/api/users/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify(values),
+      });
 
       const data = await response.json();
       console.log(data);

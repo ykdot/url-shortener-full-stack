@@ -8,7 +8,7 @@ export async function GET(
   const userAgent = request.headers.get('user-agent');
   console.log(userAgent);
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_SERVER_API_URL}/urls/${shortcode}`,
+    `${process.env.ACTUAL_SERVER_API_URL}/urls/${shortcode}`,
     {
       headers: {
         'User-Agent': userAgent || 'unknown',

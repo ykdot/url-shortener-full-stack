@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 export async function checkAdminAuthorization() {
   const cookie = await cookies();
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_SERVER_API_URL}/api/admin/check-authorization`,
+    `${process.env.ACTUAL_SERVER_API_URL}/admin/check-authorization`,
     {
       method: 'GET',
       headers: {

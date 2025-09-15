@@ -5,7 +5,7 @@ import { cookies } from 'next/headers';
 export async function getMainAnalyticsData(days: number) {
   const cookie = await cookies();
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_SERVER_API_URL}/api/analytics/main/${days}`,
+    `${process.env.ACTUAL_SERVER_API_URL}/analytics/main/${days}`,
     {
       method: 'GET',
       headers: {
@@ -26,7 +26,7 @@ export async function getURLTable(
 ) {
   const cookie = await cookies();
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_SERVER_API_URL}/api/analytics/url-table/${filter}/${order}/${page}/${wordFilter}`,
+    `${process.env.ACTUAL_SERVER_API_URL}/analytics/url-table/${filter}/${order}/${page}/${wordFilter}`,
     {
       method: 'GET',
       headers: {
