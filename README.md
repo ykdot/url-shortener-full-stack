@@ -69,7 +69,6 @@ This project is configured to run entirely within Docker.
 3.  **Build/Run Application**
     ```bash
     docker-compose up --build
-    docker-compose up
     ```
 
 4.  **Run Database Migrations**
@@ -91,3 +90,6 @@ This project is configured to run entirely within Docker.
 * **Client Application**: [http://localhost:3001](http://localhost:3001)
 * **Server API**: [http://localhost:3000](http://localhost:3000)
 * **RabbitMQ Management UI**: [http://localhost:15672](http://localhost:15672)
+
+### License
+This project is licensed under the MIT License. See the LICENSE file for details.
