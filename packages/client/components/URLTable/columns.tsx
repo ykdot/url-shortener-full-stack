@@ -57,7 +57,7 @@ export const columns: ColumnDef<URL_Data>[] = [
     header: 'New Link',
     cell: ({ row }) => {
       return (
-        <Link href={row.original.short_code} target="_blank">
+        <Link href={row.original.short_code} prefetch={false} target="_blank">
           {row.original.short_code}
         </Link>
       );
@@ -68,7 +68,7 @@ export const columns: ColumnDef<URL_Data>[] = [
     header: 'Original Link',
     cell: ({ row }) => {
       return (
-        <Link href={row.original.long_url} target="_blank">
+        <Link href={row.original.long_url} prefetch={false} target="_blank">
           {row.original.long_url}
         </Link>
       );

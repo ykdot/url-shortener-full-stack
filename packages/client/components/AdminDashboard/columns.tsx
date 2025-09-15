@@ -10,7 +10,7 @@ export type Management_Data = {
   id: string;
   short_code: string;
   long_url: string;
-  total_clicks: number;
+  clicks: number;
   date: string;
 };
 
@@ -19,14 +19,14 @@ export const payments: Management_Data[] = [
   {
     id: '728ed52f',
     short_code: 'https://ui.shadcn.com/docs/components',
-    total_clicks: 1,
+    clicks: 1,
     long_url: 'https://ui.shadcn.com/docs/components',
     date: '7/12/25',
   },
   {
     id: '489e1d42',
     short_code: 'https://ui.shadcn.com/docs/components/data-table',
-    total_clicks: 1,
+    clicks: 1,
     long_url: 'https://ui.shadcn.com/docs/components/data-table',
     date: '7/13/25',
   },
@@ -83,7 +83,7 @@ export const columns: ColumnDef<Management_Data>[] = [
     },
     cell: ({ row }) => {
       return (
-        <Link href={row.original.short_code} target="_blank">
+        <Link href={row.original.short_code} prefetch={false} target="_blank">
           {row.original.short_code}
         </Link>
       );
@@ -124,7 +124,7 @@ export const columns: ColumnDef<Management_Data>[] = [
       );
     },
     cell: ({ row }) => {
-      return <p>{row.original.total_clicks}</p>;
+      return <p className="text-center">{row.original.clicks}</p>;
     },
   },
   {

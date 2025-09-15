@@ -99,7 +99,7 @@ export default function MainAnalyticsComponent({
           <p>{dataInfo.total_clicks}</p>
         </div>
         <div className="flex flex-row gap-5">
-          <p>Total Links: </p>
+          <p>Total Distinct Links Used: </p>
           <p>{dataInfo.distinct_links}</p>
         </div>
         <div className="flex flex-row gap-5">

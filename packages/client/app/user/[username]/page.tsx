@@ -20,7 +20,7 @@ type PageProps = {
 async function checkUser(username: string) {
   const cookie = await cookies();
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_SERVER_API_URL}/api/users/get-user-info`,
+    `${process.env.ACTUAL_SERVER_API_URL}/users/get-user-info`,
     {
       method: 'GET',
       headers: {
@@ -40,7 +40,7 @@ async function checkUser(username: string) {
 async function getData(): Promise<URL_Data[]> {
   const cookie = await cookies();
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_SERVER_API_URL}/api/users/get-user-urls`,
+    `${process.env.ACTUAL_SERVER_API_URL}/users/get-user-urls`,
     {
       method: 'GET',
       headers: {
