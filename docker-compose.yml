@@ -1,0 +1,50 @@
+services:
+  server:
+    build: ./packages/server
+    ports: ['${SERVER_PORT}:3000']
+    env_file: ./.env
+    restart: always
+    depends_on: [postgres, redis, rabbitmq]
+
+  client:
+    build:
+      context: ./packages/client
+      dockerfile: Dockerfile
+      args:
+        ACTUAL_SERVER_API_URL: ${ACTUAL_SERVER_API_URL}
+    ports: ['${CLIENT_PORT}:3000']
+    env_file: ./.env
+    restart: always
+    depends_on: [server]
+
+  worker:
+    build: ./packages/server
+    restart: always
+    env_file: ./.env
+    command: node dist/workers/worker.js
+    depends_on:
+      - rabbitmq
+      - postgres
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    ports: ['${DB_PORT}:5432']
+    volumes: [postgres_data:/var/lib/postgresql/data]
+    restart: always
+
+  redis:
+    image: redis:7
+    ports: ['6379:6379']
+    restart: always
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports: ['5672:5672', '15672:15672']
+    restart: always
+
+volumes:
+  postgres_data:
