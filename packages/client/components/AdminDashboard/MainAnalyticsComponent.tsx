@@ -103,7 +103,7 @@ export default function MainAnalyticsComponent({
           <p>{dataInfo.distinct_links}</p>
         </div>
         <div className="flex flex-row gap-5">
-          <p>Top Performing Link: </p>
+          <p>Top Performing Short Code: </p>
           <p>{dataInfo.most_frequent_short_code}</p>
         </div>
       </CardContent>
